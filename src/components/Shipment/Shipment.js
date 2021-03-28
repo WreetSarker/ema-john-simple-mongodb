@@ -12,7 +12,7 @@ const Shipment = () => {
         const savedCart = getDatabaseCart();
         const orderDetail = { ...loggedInUser, products: savedCart, shipment: data, orderTime: new Date() };
 
-        fetch('http://localhost:4000/addOrder', {
+        fetch('https://guarded-meadow-24576.herokuapp.com/addOrder', {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json'
