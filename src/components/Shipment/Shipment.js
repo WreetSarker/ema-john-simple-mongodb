@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import './Shipment.css';
 import { useContext } from 'react';
@@ -9,9 +9,21 @@ import ProcessPayment from '../ProcessPayment/ProcessPayment';
 const Shipment = () => {
     const { register, handleSubmit, watch, errors } = useForm();
     const [loggedInUser, setLoggedInUser] = useContext(UserContext);
+    const [shippingData, setShippingData] = useState(null)
+
     const onSubmit = data => {
+        setShippingData(data)
+    }
+
+    const handlePaymentSuccess = paymentId => {
         const savedCart = getDatabaseCart();
-        const orderDetail = { ...loggedInUser, products: savedCart, shipment: data, orderTime: new Date() };
+        const orderDetail = {
+            ...loggedInUser,
+            products: savedCart,
+            shipment: shippingData,
+            paymentId,
+            orderTime: new Date()
+        };
 
         fetch('https://guarded-meadow-24576.herokuapp.com/addOrder', {
             method: 'POST',
@@ -33,7 +45,7 @@ const Shipment = () => {
 
     return (
         <div className="row">
-            <div className="col-md-6">
+            <div style={{ display: shippingData ? 'none' : 'block' }} className="col-md-6">
                 <form className="ship-form" onSubmit={handleSubmit(onSubmit)}>
                     <input name="name" defaultValue={loggedInUser.name} ref={register({ required: true })} placeholder="Your Name" />
                     {errors.name && <span className="error">Name is required</span>}
@@ -50,9 +62,9 @@ const Shipment = () => {
                     <input type="submit" />
                 </form>
             </div>
-            <div className="col-md-6">
+            <div style={{ display: shippingData ? 'block' : 'none' }} className="col-md-6">
                 <h2>Please pay the required amount!</h2>
-                <ProcessPayment></ProcessPayment>
+                <ProcessPayment handlePaymentSuccess={handlePaymentSuccess}></ProcessPayment>
             </div>
         </div>
     );
