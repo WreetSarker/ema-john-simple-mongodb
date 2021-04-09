@@ -8,7 +8,8 @@ const stripePromise = loadStripe('pk_test_51Ie2pFCHSoFXu73r0HajToKjG0Aba75eJIS76
 const ProcessPayment = () => {
     return (
         <Elements stripe={stripePromise}>
-            <SplitCard></SplitCard>
+            {/* <SplitCard></SplitCard> */}
+            <SimpleCardForm></SimpleCardForm>
         </Elements>
     );
 };

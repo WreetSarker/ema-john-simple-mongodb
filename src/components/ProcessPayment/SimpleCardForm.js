@@ -1,13 +1,17 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
 const SimpleCardForm = () => {
     const stripe = useStripe();
     const elements = useElements();
+    const [paymentError, setPaymentError] = useState(null)
+    const [paymentSuccess, setPaymentSuccess] = useState(null)
+
 
     const handleSubmit = async (event) => {
         // Block native form submission.
         event.preventDefault();
+
 
         if (!stripe || !elements) {
             // Stripe.js has not loaded yet. Make sure to disable
@@ -27,19 +31,30 @@ const SimpleCardForm = () => {
         });
 
         if (error) {
-            console.log('[error]', error);
+            setPaymentError(error.message);
+            setPaymentSuccess(null)
         } else {
-            console.log('[PaymentMethod]', paymentMethod);
+            setPaymentSuccess(paymentMethod);
+            setPaymentError(null)
+            // console.log('[PaymentMethod]', paymentMethod);
         }
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <CardElement />
-            <button type="submit" disabled={!stripe}>
-                Pay
-      </button>
-        </form>
+        <div>
+            <form onSubmit={handleSubmit}>
+                <CardElement />
+                <button type="submit" disabled={!stripe}>
+                    Pay
+                </button>
+            </form>
+            {
+                paymentError && <p style={{ color: 'red' }}>{paymentError}</p>
+            }
+            {
+                paymentSuccess?.id && <p style={{ color: 'green' }}>Thanks! You have paid your bill successfully!</p>
+            }
+        </div>
     );
 };
 
