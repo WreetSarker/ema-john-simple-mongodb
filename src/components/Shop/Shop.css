@@ -7,3 +7,13 @@
     margin-right: 5px;
     border-right: 1px solid lightgray;
 }
+.twin-container input {
+    justify-items: center;
+}
+
+.product-search{
+    align-items: center;
+    text-align: center;
+    width: 300px;
+    background-color: rgb(221, 233, 236);
+}

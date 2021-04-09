@@ -9,12 +9,13 @@ const Shop = () => {
     // const firstTen = fakeData.slice(0, 10);
     const [products, setProducts] = useState([]);
     const [cart, setCart] = useState([]);
+    const [search, setSearch] = useState('');
 
     useEffect(() => {
-        fetch('https://guarded-meadow-24576.herokuapp.com/products')
+        fetch('https://guarded-meadow-24576.herokuapp.com/products?search=' + search)
             .then(resp => resp.json())
             .then(data => setProducts(data))
-    }, [])
+    }, [search])
 
     useEffect(() => {
         const savedCart = getDatabaseCart();
@@ -29,6 +30,11 @@ const Shop = () => {
             .then(resp => resp.json())
             .then(data => setCart(data))
     }, [])
+
+    const handleSearch = event => {
+        setSearch(event.target.value)
+    }
+
     const handleAddProduct = (product) => {
         const toBeAdded = product.key;
         const sameProduct = cart.find(pd => pd.key === toBeAdded);
@@ -49,6 +55,7 @@ const Shop = () => {
     return (
         <div className="twin-container">
             <div className="product-container">
+                <input type="text" onBlur={handleSearch} placeholder="Search Your Desired Product" className="product-search" />
                 {
                     products.map(product => <Product key={product.key} showCartBtn={true} handleAddProduct={handleAddProduct} product={product}></Product>)
                 }
