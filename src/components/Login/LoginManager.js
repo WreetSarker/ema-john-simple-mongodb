@@ -11,6 +11,16 @@ export const initializeLoginFramework = () => {
     }
 }
 
+const setUserToken = () => {
+    firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function (idToken) {
+        // Send token to your backend via HTTPS
+        // ...
+        sessionStorage.setItem('token', idToken)
+    }).catch(function (error) {
+        // Handle error
+    });
+}
+
 export const handleGoogleSignIn = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
     return firebase.auth().signInWithPopup(provider)
@@ -26,6 +36,7 @@ export const handleGoogleSignIn = () => {
                 photoURL: photoURL,
                 success: true,
             }
+            setUserToken()
             return signedInUser;
             console.log(email, displayName, photoURL);
         }).catch(err => {
